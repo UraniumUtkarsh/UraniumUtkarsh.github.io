@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Intern Feedback | Encardio Rite Electronics Pvt. Ltd.</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --blue: #005baa;
+            --dark-blue: #003b70;
+            --text: #1e2933;
+            --muted: #687684;
+            --border: #d9e1e8;
+            --background: #f4f7fa;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: var(--background);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* =========================
+           HEADER
+        ========================== */
+
+        .top-header {
+            height: 74px;
+            background: #fff;
+            border-bottom: 1px solid #e3e8ed;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 7%;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .company-name {
+            line-height: 1.05;
+        }
+
+        .company-main {
+            color: var(--dark-blue);
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -.3px;
+        }
+
+        .company-sub {
+            color: #72808c;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 1.15px;
+            margin-top: 6px;
+            text-transform: uppercase;
+        }
+
+        .header-label {
+            color: var(--blue);
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: .8px;
+            text-transform: uppercase;
+        }
+
+        /* =========================
+           HERO
+        ========================== */
+
+        .hero {
+            background: linear-gradient(135deg, var(--dark-blue), var(--blue));
+            color: #fff;
+            text-align: center;
+            padding: 48px 20px 62px;
+        }
+
+        .eyebrow {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            margin-bottom: 13px;
+            opacity: .82;
+        }
+
+        .hero h1 {
+            font-size: 36px;
+            font-weight: 700;
+            letter-spacing: -.5px;
+            margin-bottom: 9px;
+        }
+
+        .hero p {
+            font-size: 15px;
+            opacity: .9;
+        }
+
+        /* =========================
+           MAIN CARD
+        ========================== */
+
+        .container {
+            width: 92%;
+            max-width: 720px;
+            margin: -34px auto 45px;
+            position: relative;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 12px 35px rgba(20, 52, 78, .12);
+            padding: 34px;
+        }
+
+        .intro {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .intro h2 {
+            color: var(--dark-blue);
+            font-size: 21px;
+            margin-bottom: 8px;
+        }
+
+        .intro p {
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* =========================
+           FEEDBACK FACILITATOR
+        ========================== */
+
+        .facilitator {
+            background: #f7f9fb;
+            border: 1px solid #e5ebf0;
+            border-radius: 9px;
+            padding: 15px 17px;
+            margin-bottom: 28px;
+        }
+
+        .facilitator-label {
+            color: var(--muted);
+            display: block;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: .7px;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+
+        .facilitator-name {
+            color: var(--dark-blue);
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .facilitator-role {
+            color: var(--muted);
+            font-size: 13px;
+            margin-top: 3px;
+        }
+
+        /* =========================
+           FORM
+        ========================== */
+
+        .form-section {
+            margin-bottom: 28px;
+        }
+
+        .field {
+            margin-bottom: 17px;
+        }
+
+        .field:last-child {
+            margin-bottom: 0;
+        }
+
+        label {
+            display: block;
+            color: #334454;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 7px;
+        }
+
+        .required {
+            color: #c62828;
+        }
+
+        input[type="text"],
+        textarea {
+            width: 100%;
+            border: 1px solid var(--border);
+            border-radius: 7px;
+            background: #fff;
+            color: var(--text);
+            font: inherit;
+            font-size: 14px;
+            outline: none;
+            transition: border-color .15s, box-shadow .15s;
+        }
+
+        input[type="text"] {
+            height: 45px;
+            padding: 0 13px;
+        }
+
+        textarea {
+            min-height: 105px;
+            padding: 12px 13px;
+            resize: vertical;
+        }
+
+        input[type="text"]:focus,
+        textarea:focus {
+            border-color: var(--blue);
+            box-shadow: 0 0 0 3px rgba(0, 91, 170, .09);
+        }
+
+        .field-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        /* =========================
+           RATING
+        ========================== */
+
+        .rating-section {
+            border-top: 1px solid #e8edf1;
+            padding-top: 28px;
+            text-align: center;
+        }
+
+        .question {
+            color: #263746;
+            font-size: 18px;
+            font-weight: 600;
+            line-height: 1.4;
+            margin-bottom: 14px;
+        }
+
+        .score {
+            color: var(--blue);
+            font-size: 48px;
+            font-weight: 700;
+            line-height: 1;
+            margin-bottom: 17px;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 6px;
+            accent-color: var(--blue);
+            cursor: pointer;
+        }
+
+        .range-labels {
+            display: flex;
+            justify-content: space-between;
+            color: var(--muted);
+            font-size: 11px;
+            margin-top: 7px;
+        }
+
+        .stars {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 19px 0 25px;
+        }
+
+        .star {
+            background: transparent;
+            border: 0;
+            color: #d3dce4;
+            cursor: pointer;
+            font-size: 27px;
+            padding: 2px 3px;
+            transition: transform .12s, color .12s;
+        }
+
+        .star.active {
+            color: #f2b51d;
+        }
+
+        .star:hover {
+            transform: scale(1.12);
+        }
+
+        /* =========================
+           SUBMIT
+        ========================== */
+
+        .submit-btn {
+            width: 100%;
+            height: 48px;
+            background: var(--blue);
+            border: 0;
+            border-radius: 7px;
+            color: #fff;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 700;
+            margin-top: 4px;
+            transition: background .15s;
+        }
+
+        .submit-btn:hover {
+            background: var(--dark-blue);
+        }
+
+        .submit-btn:disabled {
+            cursor: wait;
+            opacity: .65;
+        }
+
+        .status {
+            font-size: 13px;
+            min-height: 21px;
+            margin-top: 11px;
+            text-align: center;
+        }
+
+        .status.success {
+            color: #16834b;
+        }
+
+        .status.error {
+            color: #c62828;
+        }
+
+        /* =========================
+           FOOTER
+        ========================== */
+
+        footer {
+            color: #7a8792;
+            font-size: 11px;
+            line-height: 1.6;
+            padding: 0 20px 28px;
+            text-align: center;
+        }
+
+        /* =========================
+           SUBMISSION LOADING OVERLAY
+        ========================== */
+
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(255, 255, 255, .78);
+            backdrop-filter: blur(3px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+        }
+
+        .loading-overlay.show {
+            display: flex;
+        }
+
+        .loading-box {
+            width: min(320px, calc(100% - 40px));
+            background: #fff;
+            border: 1px solid #e2e8ee;
+            border-radius: 12px;
+            box-shadow: 0 12px 35px rgba(20, 52, 78, .16);
+            padding: 25px 24px;
+            text-align: center;
+        }
+
+        .spinner {
+            width: 38px;
+            height: 38px;
+            margin: 0 auto 15px;
+            border: 4px solid #dce8f2;
+            border-top-color: var(--blue);
+            border-radius: 50%;
+            animation: spin .8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-title {
+            color: var(--dark-blue);
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .loading-text {
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        /* =========================
+           MOBILE
+        ========================== */
+
+        @media (max-width: 650px) {
+            .top-header {
+                height: 66px;
+                padding: 0 20px;
+            }
+
+            .company-main {
+                font-size: 18px;
+            }
+
+            .company-sub {
+                font-size: 8px;
+                letter-spacing: .8px;
+            }
+
+            .header-label {
+                display: none;
+            }
+
+            .hero {
+                padding: 40px 18px 58px;
+            }
+
+            .hero h1 {
+                font-size: 29px;
+            }
+
+            .hero p {
+                font-size: 14px;
+            }
+
+            .container {
+                margin-top: -30px;
+            }
+
+            .card {
+                padding: 25px 19px;
+            }
+
+            .field-row {
+                grid-template-columns: 1fr;
+                gap: 17px;
+            }
+
+            .score {
+                font-size: 45px;
+            }
+
+            .star {
+                font-size: 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- =========================
+         SUBMISSION LOADING
+    ========================== -->
+
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-box">
+            <div class="spinner"></div>
+
+            <div class="loading-title">
+                Submitting your feedback
+            </div>
+
+            <div class="loading-text">
+                Please wait while your response is being recorded.
+            </div>
+        </div>
+    </div>
+
+
+    <!-- =========================
+         HEADER
+    ========================== -->
+
+    <header class="top-header">
+
+        <div class="company-name">
+            <div class="company-main">
+                Encardio Rite
+            </div>
+
+            <div class="company-sub">
+                Electronics Pvt. Ltd.
+            </div>
+        </div>
+
+        <div class="header-label">
+            Information Technology
+        </div>
+
+    </header>
+
+
+    <!-- =========================
+         HERO
+    ========================== -->
+
+    <section class="hero">
+
+        <div class="eyebrow">
+            INFORMATION TECHNOLOGY DEPARTMENT
+        </div>
+
+        <h1>
+            Intern Feedback
+        </h1>
+
+        <p>
+            Complaint Resolution & IT Support
+        </p>
+
+    </section>
+
+
+    <!-- =========================
+         MAIN
+    ========================== -->
+
+    <main class="container" id="feedback">
+
+        <div class="card">
+
+            <div class="intro">
+
+                <h2>
+                    We value your feedback
+                </h2>
+
+                <p>
+                    Please take a moment to rate your experience
+                    with the resolution of your complaint or IT
+                    support request.
+                </p>
+
+            </div>
+
+
+            <!-- Feedback facilitator -->
+
+            <div class="facilitator">
+
+                <span class="facilitator-label">
+                    Feedback Facilitated By
+                </span>
+
+                <div class="facilitator-name">
+                    Utkarsh Pandey
+                </div>
+
+                <div class="facilitator-role">
+                    Intern, Department of Information Technology
+                </div>
+
+            </div>
+
+
+            <!-- Visitor information -->
+
+            <div class="form-section">
+
+                <div class="field-row">
+
+                    <div class="field">
+
+                        <label for="visitorName">
+                            Your Name <span class="required">*</span>
+                        </label>
+
+                        <input
+                            type="text"
+                            id="visitorName"
+                            placeholder="Enter your name"
+                            maxlength="100"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label for="department">
+                            Department <span class="required">*</span>
+                        </label>
+
+                        <input
+                            type="text"
+                            id="department"
+                            placeholder="Enter your department"
+                            maxlength="100"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Rating -->
+
+            <div class="rating-section">
+
+                <div class="question">
+                    How satisfied are you with the resolution
+                    of your complaint?
+                </div>
+
+
+                <div
+                    class="score"
+                    id="scoreValue"
+                >
+                    10
+                </div>
+
+
+                <input
+                    type="range"
+                    id="score"
+                    min="1"
+                    max="10"
+                    step="1"
+                    value="10"
+                    aria-label="Complaint resolution score from 1 to 10"
+                >
+
+
+                <div class="range-labels">
+
+                    <span>1 — Very Poor</span>
+
+                    <span>10 — Excellent</span>
+
+                </div>
+
+
+                <!-- Star selector -->
+
+                <div
+                    class="stars"
+                    id="stars"
+                    aria-label="Score selection"
+                ></div>
+
+
+                <!-- Comment -->
+
+                <div class="field">
+
+                    <label for="comment">
+                        Additional Comments
+                        <span style="font-weight:400;color:#8a96a0;">
+                            (Optional)
+                        </span>
+                    </label>
+
+                    <textarea
+                        id="comment"
+                        maxlength="2000"
+                        placeholder="Tell us what went well or what could be improved..."
+                    ></textarea>
+
+                </div>
+
+
+                <button
+                    class="submit-btn"
+                    id="submitBtn"
+                    type="button"
+                >
+                    Submit Feedback
+                </button>
+
+
+                <div
+                    class="status"
+                    id="status"
+                    aria-live="polite"
+                ></div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <footer>
+
+        <a href="https://www.encardio.com">Encardio Rite Electronics Pvt. Ltd.</a> | Feedback-Website powered by utkarshpandey.com
+
+        <br>
+
+        Thank you for helping us improve our IT support services.
+
+    </footer>
+
+
+    <script>
+
+        /* =====================================================
+           GOOGLE APPS SCRIPT WEB APP URL
+        ====================================================== */
+
+        const SCRIPT_URL =
+            "https://script.google.com/macros/s/AKfycbyUpQxyLI-f-kO3wLeV7P9P4uSzdbvRycpYzOjRTEUQtiMMritfxsPkaz0SeCEJzx9S/exec";
+
+
+        /* =====================================================
+           ELEMENTS
+        ====================================================== */
+
+        const slider =
+            document.getElementById("score");
+
+        const scoreValue =
+            document.getElementById("scoreValue");
+
+        const stars =
+            document.getElementById("stars");
+
+        const visitorName =
+            document.getElementById("visitorName");
+
+        const department =
+            document.getElementById("department");
+
+        const comment =
+            document.getElementById("comment");
+
+        const submitBtn =
+            document.getElementById("submitBtn");
+
+        const status =
+            document.getElementById("status");
+
+        const loadingOverlay =
+            document.getElementById("loadingOverlay");
+
+
+        /* =====================================================
+           SCORE / STARS
+        ====================================================== */
+
+        function renderStars(score) {
+
+            stars.innerHTML = "";
+
+            for (let i = 1; i <= 10; i++) {
+
+                const star =
+                    document.createElement("button");
+
+                star.type = "button";
+
+                star.className =
+                    "star" +
+                    (i <= score ? " active" : "");
+
+                star.textContent = "★";
+
+                star.title =
+                    `${i}/10`;
+
+                star.setAttribute(
+                    "aria-label",
+                    `Rate ${i} out of 10`
+                );
+
+                star.addEventListener(
+                    "click",
+                    () => setScore(i)
+                );
+
+                stars.appendChild(star);
+            }
+        }
+
+
+        function setScore(value) {
+
+            slider.value = value;
+
+            scoreValue.textContent = value;
+
+            renderStars(value);
+        }
+
+
+        slider.addEventListener(
+            "input",
+            () => setScore(Number(slider.value))
+        );
+
+
+        setScore(10);
+
+
+        /* =====================================================
+           SUBMIT FEEDBACK
+        ====================================================== */
+
+        async function submitFeedback() {
+
+            const name =
+                visitorName.value.trim();
+
+            const dept =
+                department.value.trim();
+
+            const score =
+                Number(slider.value);
+
+            const feedbackComment =
+                comment.value.trim();
+
+
+            /* Required fields */
+
+            if (!name) {
+
+                visitorName.focus();
+
+                status.className =
+                    "status error";
+
+                status.textContent =
+                    "Please enter your name.";
+
+                return;
+            }
+
+
+            if (!dept) {
+
+                department.focus();
+
+                status.className =
+                    "status error";
+
+                status.textContent =
+                    "Please enter your department.";
+
+                return;
+            }
+
+
+            /* Backend check */
+
+            if (
+                !SCRIPT_URL ||
+                SCRIPT_URL.includes("PASTE_YOUR")
+            ) {
+
+                status.className =
+                    "status error";
+
+                status.textContent =
+                    "Feedback system is not configured yet.";
+
+                return;
+            }
+
+
+            submitBtn.disabled = true;
+
+            loadingOverlay.classList.add("show");
+
+            status.className =
+                "status";
+
+            status.textContent =
+                "Your response is being submitted...";
+
+
+            const feedback = {
+
+                name: name,
+
+                department: dept,
+
+                score: score,
+
+                comment: feedbackComment
+
+            };
+
+
+            try {
+
+                /*
+                 * The Apps Script endpoint receives the data
+                 * and appends it to the Google Sheet.
+                 */
+
+                await fetch(
+                    SCRIPT_URL,
+                    {
+                        method: "POST",
+                        mode: "no-cors",
+                        headers: {
+                            "Content-Type":
+                                "text/plain;charset=utf-8"
+                        },
+                        body:
+                            JSON.stringify(feedback)
+                    }
+                );
+
+
+                status.className =
+                    "status success";
+
+                status.textContent =
+                    "Thank you! Your feedback has been recorded.";
+
+
+                /* Clear form */
+
+                visitorName.value = "";
+
+                department.value = "";
+
+                comment.value = "";
+
+                setScore(10);
+
+
+            } catch (error) {
+
+                console.error(error);
+
+                status.className =
+                    "status error";
+
+                status.textContent =
+                    "Unable to save feedback. Please try again.";
+
+            } finally {
+
+                loadingOverlay.classList.remove("show");
+
+                submitBtn.disabled = false;
+
+            }
+        }
+
+
+        submitBtn.addEventListener(
+            "click",
+            submitFeedback
+        );
+
+    </script>
+
+</body>
+</html>
