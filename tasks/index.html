@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html>
+<head>
+  
+
+  <meta charset="UTF-8">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Reactor Control Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+<div class="app">
+
+  <!-- =====================================================
+       TOP BAR
+       ===================================================== -->
+
+  <header class="topbar">
+    <div class="topbar-inner">
+
+      <div class="brand">
+
+        <div class="brand-mark">
+          ◈
+        </div>
+
+        <div>
+          <div class="brand-title" id="systemName">
+            PRISMATIC REACTOR CONTROL
+          </div>
+
+          <div class="brand-subtitle" id="reactorId">
+            PRC-01 · CONTROL NETWORK
+          </div>
+        </div>
+
+      </div>
+
+      <div class="topbar-right">
+
+        <div class="system-status">
+          <span class="status-dot"></span>
+          <span id="systemStatus">ONLINE</span>
+        </div>
+
+        <button
+          class="btn btn-orange"
+          onclick="openController()"
+        >
+          Controller Room
+        </button>
+
+      </div>
+
+    </div>
+  </header>
+
+
+  <!-- =====================================================
+       MAIN CONTENT
+       ===================================================== -->
+
+  <main class="container">
+
+    <!-- HERO -->
+
+    <section class="hero">
+
+      <div class="hero-grid">
+
+        <div>
+
+          <div class="eyebrow">
+            Reactor Operations Interface
+          </div>
+
+          <h1>
+            Mission
+            <span>Control</span>
+          </h1>
+
+          <p class="hero-description">
+            Central operational dashboard for monitoring reactor
+            tasks, deadlines, system activity and controller actions.
+          </p>
+
+        </div>
+
+
+        <div class="clock-panel">
+
+          <div class="clock-label">
+            Local Control Time
+          </div>
+
+          <div
+            class="clock mono"
+            id="liveClock"
+          >
+            --:--:--
+          </div>
+
+          <div
+            class="clock-date"
+            id="liveDate"
+          >
+            Loading...
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         TELEMETRY
+         ===================================================== -->
+
+    <section>
+
+      <div class="telemetry-grid">
+
+        <div class="telemetry-card">
+
+          <div class="telemetry-label">
+            Total Tasks
+          </div>
+
+          <div
+            class="telemetry-value"
+            id="statTotal"
+          >
+            0
+          </div>
+
+          <div class="telemetry-meta">
+            Registered operations
+          </div>
+
+        </div>
+
+
+        <div class="telemetry-card">
+
+          <div class="telemetry-label">
+            Standby
+          </div>
+
+          <div
+            class="telemetry-value"
+            id="statPending"
+          >
+            0
+          </div>
+
+          <div class="telemetry-meta">
+            Awaiting execution
+          </div>
+
+        </div>
+
+
+        <div class="telemetry-card">
+
+          <div class="telemetry-label">
+            Active
+          </div>
+
+          <div
+            class="telemetry-value"
+            id="statActive"
+          >
+            0
+          </div>
+
+          <div class="telemetry-meta">
+            Operations in progress
+          </div>
+
+        </div>
+
+
+        <div class="telemetry-card">
+
+          <div class="telemetry-label">
+            Completed
+          </div>
+
+          <div
+            class="telemetry-value"
+            id="statCompleted"
+          >
+            0
+          </div>
+
+          <div class="telemetry-meta">
+            Successfully closed
+          </div>
+
+        </div>
+
+
+        <div class="telemetry-card orange">
+
+          <div class="telemetry-label">
+            Critical
+          </div>
+
+          <div
+            class="telemetry-value"
+            id="statCritical"
+          >
+            0
+          </div>
+
+          <div class="telemetry-meta">
+            Immediate attention
+          </div>
+
+        </div>
+
+
+        <div class="telemetry-card orange">
+
+          <div class="telemetry-label">
+            Deadline Breach
+          </div>
+
+          <div
+            class="telemetry-value"
+            id="statOverdue"
+          >
+            0
+          </div>
+
+          <div class="telemetry-meta">
+            Overdue operations
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         TASK LOAD
+         ===================================================== -->
+
+    <section>
+
+      <div class="section-header">
+
+        <div>
+          <h2 class="section-title">
+            Reactor Task Load
+          </h2>
+
+          <p class="section-description">
+            Current operational completion status
+          </p>
+        </div>
+
+        <div
+          class="mono text-blue"
+          id="completionPercentage"
+        >
+          0%
+        </div>
+
+      </div>
+
+
+      <div class="load-panel">
+
+        <div class="load-header">
+
+          <span>
+            Completion Progress
+          </span>
+
+          <span
+            class="mono"
+            id="completionText"
+          >
+            0 / 0
+          </span>
+
+        </div>
+
+        <div class="progress">
+
+          <div
+            class="progress-bar"
+            id="completionBar"
+            style="width: 0%"
+          ></div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         OPERATION QUEUE
+         ===================================================== -->
+
+    <section>
+
+      <div class="section-header">
+
+        <div>
+
+          <h2 class="section-title">
+            Operation Queue
+          </h2>
+
+          <p class="section-description">
+            Tasks requiring monitoring or execution
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div
+        class="task-list"
+        id="taskList"
+      >
+
+        <div class="loading">
+          Initializing reactor task interface...
+        </div>
+
+      </div>
+
+    </section>
+</main>
+
+
+  <!-- =====================================================
+       AUTHENTICATION MODAL
+       ===================================================== -->
+
+  <div
+    class="modal"
+    id="authModal"
+  >
+
+    <div class="modal-panel auth-panel">
+
+      <div class="modal-header">
+
+        <div>
+
+          <h2 class="modal-title">
+            Controller Authentication
+          </h2>
+
+          <div class="modal-subtitle">
+            Restricted control interface
+          </div>
+
+        </div>
+
+        <button
+          class="modal-close"
+          onclick="closeModal('authModal')"
+        >
+          ×
+        </button>
+
+      </div>
+
+
+      <div class="modal-body">
+
+        <div class="auth-content">
+
+          <div class="auth-icon">
+            ◈
+          </div>
+
+          <h2>
+            Controller Access
+          </h2>
+
+          <p>
+            Authentication is required before modifying reactor
+            operations.
+          </p>
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label class="form-label">
+            Controller Password
+          </label>
+
+          <input
+            type="password"
+            id="controllerPassword"
+            class="form-control"
+            placeholder="Enter controller password"
+            autocomplete="current-password"
+            onkeydown="handlePasswordKey(event)"
+          >
+
+        </div>
+
+      </div>
+
+
+      <div class="modal-footer">
+
+        <button
+          class="btn"
+          onclick="closeModal('authModal')"
+        >
+          Cancel
+        </button>
+
+        <button
+          class="btn btn-orange"
+          id="authenticateButton"
+          onclick="authenticate()"
+        >
+          Authenticate
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       CONTROLLER ROOM
+       ===================================================== -->
+
+  <div
+    class="modal"
+    id="controllerModal"
+  >
+
+    <div class="modal-panel">
+
+      <div class="modal-header">
+
+        <div>
+
+          <h2 class="modal-title">
+            Controller Room
+          </h2>
+
+          <div class="modal-subtitle">
+            Authorized operational control
+          </div>
+
+        </div>
+
+        <button
+          class="modal-close"
+          onclick="closeModal('controllerModal')"
+        >
+          ×
+        </button>
+
+      </div>
+
+
+      <div class="modal-body">
+
+        <div
+          id="controllerOperator"
+          class="text-blue mono"
+          style="margin-bottom:18px;font-size:11px;"
+        >
+          Operator: --
+        </div>
+
+
+        <div class="form-grid">
+
+          <!-- TASK -->
+
+          <div class="form-group full">
+
+            <label class="form-label">
+              Task
+            </label>
+
+            <input
+              type="text"
+              id="editTask"
+              class="form-control"
+            >
+
+          </div>
+
+
+          <!-- DESCRIPTION -->
+
+          <div class="form-group full">
+
+            <label class="form-label">
+              Description
+            </label>
+
+            <textarea
+              id="editDescription"
+              class="form-control"
+            ></textarea>
+
+          </div>
+
+
+          <!-- STATUS -->
+
+          <div class="form-group">
+
+            <label class="form-label">
+              Status
+            </label>
+
+            <select
+              id="editStatus"
+              class="form-control"
+            >
+
+              <option value="Pending">
+                Pending
+              </option>
+
+              <option value="In Progress">
+                In Progress
+              </option>
+
+              <option value="Completed">
+                Completed
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <!-- PRIORITY -->
+
+          <div class="form-group">
+
+            <label class="form-label">
+              Priority
+            </label>
+
+            <select
+              id="editPriority"
+              class="form-control"
+            >
+
+              <option value="Low">
+                Low
+              </option>
+
+              <option value="Medium">
+                Medium
+              </option>
+
+              <option value="High">
+                High
+              </option>
+
+              <option value="Critical">
+                Critical
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <!-- DUE DATE -->
+
+          <div class="form-group">
+
+            <label class="form-label">
+              Due Date
+            </label>
+
+            <input
+              type="date"
+              id="editDueDate"
+              class="form-control"
+            >
+
+          </div>
+
+
+          <!-- DUE TIME -->
+
+          <div class="form-group">
+
+            <label class="form-label">
+              Due Time
+            </label>
+
+            <input
+              type="time"
+              id="editDueTime"
+              class="form-control"
+            >
+
+          </div>
+
+
+          <!-- NOTES -->
+
+          <div class="form-group full">
+
+            <label class="form-label">
+              Controller Notes
+            </label>
+
+            <textarea
+              id="editNotes"
+              class="form-control"
+              placeholder="Enter operational notes..."
+            ></textarea>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="modal-footer">
+
+        <button
+          class="btn"
+          onclick="logout()"
+        >
+          Lock Controller
+        </button>
+
+        <button
+          class="btn btn-orange"
+          onclick="completeSelectedTask()"
+        >
+          Mark Completed
+        </button>
+
+        <button
+          class="btn btn-primary"
+          id="saveButton"
+          onclick="saveTask()"
+        >
+          Save Changes
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       TOASTS
+       ===================================================== -->
+
+  <div
+    class="toast-container"
+    id="toastContainer"
+  ></div>
+
+</div>
+<footer class="site-footer">
+  <div>
+    Developed by ©<a href="https://utkarshpandey.com" target="_blank" rel="noopener">utkarshpandey.com</a>
+    · Built to manage tasks, reminders, due operations, and deadlines.
+  </div>
+
+  <nav>
+    <a href="https://utkarshpandey.com" target="_blank" rel="noopener">Home</a>
+    <span>·</span>
+    <a href="https://cyber.utkarshpandey.com" target="_blank" rel="noopener">Security</a>
+  </nav>
+</footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
