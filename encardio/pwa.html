@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Encardio Rite Internal App Viewer</title>
+
+  <!-- Mobile & PWA Configuration for Android installation -->
+  <meta name="theme-color" content="#09131f">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Encardio Rite">
+
+  <!-- Inline Data URI Web App Manifest for Android PWA Installability -->
+  <link rel="manifest" href='data:application/manifest+json,{"name":"Encardio Rite Internal App Viewer","short_name":"Encardio Viewer","start_url":".","display":"standalone","background_color":"%2309131f","theme_color":"%2309131f","icons":[{"src":"data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Crect width=%27100%27 height=%27100%27 rx=%2720%27 fill=%27%230284c7%27/%3E%3Cpath d=%27M20 70 L38 35 L52 55 L70 25 L82 70 Z%27 fill=%27none%27 stroke=%27white%27 stroke-width=%277%27 stroke-linejoin=%27round%27 stroke-linecap=%27round%27/%3E%3Ccircle cx=%2770%27 cy=%2725%27 r=%275%27 fill=%27%2338bdf8%27/%3E%3C/svg%3E","sizes":"192x192 512x512","type":"image/svg+xml"}]}'>
+
+  <!-- External Libraries: Tailwind CSS & Lucide Icons -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            encardio: {
+              50: '#f0f9ff',
+              100: '#e0f2fe',
+              200: '#bae6fd',
+              400: '#38bdf8',
+              500: '#0ea5e9',
+              600: '#0284c7',
+              700: '#0369a1',
+              800: '#075985',
+              900: '#0c4a6e',
+              dark: '#070f1a',
+              card: '#0c1827',
+              border: '#16283e'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    input, textarea {
+      user-select: text;
+    }
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(9, 19, 31, 0.8);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(30, 58, 88, 0.6);
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(56, 189, 248, 0.4);
+    }
+    .pulse-glow {
+      box-shadow: 0 0 15px rgba(14, 165, 233, 0.25);
+    }
+  </style>
+</head>
+<body class="bg-encardio-dark text-slate-100 min-h-screen flex flex-col justify-between selection:bg-sky-600 selection:text-white antialiased">
+
+  <header class="w-full border-b border-encardio-border bg-encardio-card/90 backdrop-blur-md sticky top-0 z-30 px-4 sm:px-6 py-3 transition-all">
+    <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
+      
+      <!-- Brand & Name -->
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-600 via-sky-500 to-blue-700 flex items-center justify-center shadow-lg shadow-sky-600/25 border border-sky-400/30">
+          <i data-lucide="activity" class="w-5 h-5 text-white"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-sm sm:text-base font-bold tracking-tight text-white leading-none">
+              Encardio Rite Internal App Viewer
+            </h1>
+            <span class="hidden sm:inline-flex text-[10px] font-mono uppercase font-semibold px-2 py-0.5 rounded bg-sky-950 text-sky-400 border border-sky-800">
+              Field Node
+            </span>
+          </div>
+          <p class="text-[11px] text-slate-400 mt-1 font-mono tracking-tight">Instrumentation & Intranet Portal Gateway</p>
+        </div>
+      </div>
+
+      <!-- Network and Install Action Group -->
+      <div class="flex items-center gap-2.5">
+        <!-- Live System Internet Indicator -->
+        <div id="device-network-badge" class="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-mono font-medium bg-emerald-950/80 text-emerald-400 border border-emerald-800/80 shadow-sm">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span id="device-status-text">NETWORK OK</span>
+        </div>
+
+        <!-- Android PWA Install trigger button -->
+        <button id="pwa-install-btn" class="hidden text-xs bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 text-white font-semibold px-3 py-1.5 rounded-lg shadow-sm flex items-center gap-1.5 transition border border-sky-400/30">
+          <i data-lucide="download" class="w-3.5 h-3.5"></i>
+          <span class="hidden sm:inline">Install App</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-5 flex flex-col gap-4">
+    
+    <!-- Control & Input Panel -->
+    <div class="bg-encardio-card border border-encardio-border rounded-2xl p-4 sm:p-5 shadow-xl">
+      <form id="url-form" class="flex flex-col sm:flex-row gap-3">
+        <div class="relative flex-1">
+          <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+            <i data-lucide="terminal" class="w-4 h-4 text-sky-400"></i>
+          </div>
+          <input 
+            type="text" 
+            id="url-input" 
+            placeholder="e.g. 192.168.1.100:8080 or https://internal.encardio.com" 
+            autocomplete="off"
+            spellcheck="false"
+            class="w-full pl-10 pr-20 py-2.5 bg-encardio-dark border border-encardio-border rounded-xl text-sm sm:text-base font-mono text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500 transition"
+            required
+          >
+          <!-- Clear Button -->
+          <button 
+            type="button" 
+            id="clear-input-btn"
+            class="absolute inset-y-0 right-10 pr-3 flex items-center text-slate-500 hover:text-slate-300 hidden"
+            title="Clear"
+          >
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+          <!-- Paste Shortcut -->
+          <button 
+            type="button" 
+            id="paste-btn"
+            class="absolute inset-y-0 right-2 px-2 flex items-center text-xs font-mono font-medium text-slate-400 hover:text-sky-400 transition"
+            title="Paste from clipboard"
+          >
+            <i data-lucide="clipboard" class="w-3.5 h-3.5"></i>
+          </button>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button 
+            type="submit" 
+            id="submit-btn" 
+            class="w-full sm:w-auto px-5 py-2.5 bg-sky-600 hover:bg-sky-500 active:bg-sky-700 text-white text-sm font-semibold rounded-xl flex items-center justify-center gap-2 transition duration-150 shadow-md shadow-sky-600/30"
+          >
+            <span id="btn-text">Connect & Load</span>
+            <i data-lucide="arrow-right" class="w-4 h-4" id="btn-icon"></i>
+          </button>
+
+          <button 
+            type="button" 
+            id="open-tab-btn" 
+            class="px-3.5 py-2.5 bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white rounded-xl text-sm font-medium transition flex items-center gap-1.5 border border-slate-700 shrink-0" 
+            title="Open direct in new tab"
+          >
+            <i data-lucide="external-link" class="w-4 h-4"></i>
+            <span class="hidden md:inline text-xs font-mono">Direct Tab</span>
+          </button>
+        </div>
+      </form>
+
+      <!-- Presets & Saved History Bar -->
+      <div class="mt-4 pt-3 border-t border-encardio-border/80 flex flex-col md:flex-row md:items-center justify-between gap-3 text-xs">
+        
+        <!-- Quick Presets -->
+        <div class="flex items-center flex-wrap gap-1.5 text-slate-400">
+          <span class="font-mono text-[11px] text-slate-500 uppercase flex items-center gap-1">
+            <i data-lucide="bookmark" class="w-3 h-3 text-sky-400"></i> Presets:
+          </span>
+          <button class="preset-btn px-2.5 py-1 bg-slate-900/90 hover:bg-sky-950 hover:text-sky-300 text-slate-300 rounded-lg font-mono border border-slate-800 text-[11px] transition" data-url="http://192.168.1.1:8080">192.168.1.1:8080</button>
+          <button class="preset-btn px-2.5 py-1 bg-slate-900/90 hover:bg-sky-950 hover:text-sky-300 text-slate-300 rounded-lg font-mono border border-slate-800 text-[11px] transition" data-url="http://10.0.0.1:3000">10.0.0.1:3000</button>
+          <button class="preset-btn px-2.5 py-1 bg-slate-900/90 hover:bg-sky-950 hover:text-sky-300 text-slate-300 rounded-lg font-mono border border-slate-800 text-[11px] transition" data-url="https://wikipedia.org">wikipedia.org</button>
+          <button class="preset-btn px-2.5 py-1 bg-slate-900/90 hover:bg-rose-950 hover:text-rose-300 text-slate-300 rounded-lg font-mono border border-slate-800 text-[11px] transition text-rose-400" data-url="https://offline-invalid-node-check-999.org">offline-test.org</button>
+        </div>
+
+        <!-- Locally Saved Recents -->
+        <div class="flex items-center gap-2 overflow-x-auto">
+          <span class="font-mono text-[11px] text-slate-500 uppercase shrink-0 flex items-center gap-1">
+            <i data-lucide="history" class="w-3 h-3 text-sky-400"></i> Local Device History:
+          </span>
+          <div id="recent-urls-list" class="flex items-center gap-1.5 flex-nowrap overflow-x-auto pb-0.5">
+            <span class="text-slate-600 italic text-[11px]">No saved URLs</span>
+          </div>
+          <button id="clear-history-btn" class="hidden text-[11px] text-rose-400 hover:text-rose-300 ml-2 underline shrink-0 font-mono">Clear</button>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="flex-1 min-h-[480px] bg-encardio-card border border-encardio-border rounded-2xl overflow-hidden flex flex-col shadow-2xl relative">
+      
+      <!-- Console Status Header -->
+      <div id="viewer-header" class="px-4 py-2.5 bg-encardio-dark/95 border-b border-encardio-border flex items-center justify-between text-xs text-slate-300">
+        <div class="flex items-center gap-2 overflow-hidden">
+          <div class="flex items-center gap-1.5">
+            <span class="w-2.5 h-2.5 rounded-full bg-rose-500/80 inline-block"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-amber-500/80 inline-block"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500/80 inline-block"></span>
+          </div>
+          <span class="text-slate-700">|</span>
+          <span class="text-[11px] font-mono text-slate-400 uppercase">Target:</span>
+          <span id="active-url-display" class="truncate font-mono text-[11px] sm:text-xs text-slate-400">IDLE - Enter an internal or external address</span>
+        </div>
+
+        <div class="flex items-center gap-1.5 shrink-0">
+          <button id="copy-url-btn" class="p-1.5 hover:bg-slate-800 rounded-lg text-slate-400 hover:text-sky-300 transition" title="Copy current URL">
+            <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+          </button>
+          <button id="refresh-frame-btn" class="p-1.5 hover:bg-slate-800 rounded-lg text-slate-400 hover:text-sky-300 transition" title="Reload Frame">
+            <i data-lucide="rotate-cw" class="w-3.5 h-3.5"></i>
+          </button>
+          <button id="fullscreen-frame-btn" class="p-1.5 hover:bg-slate-800 rounded-lg text-slate-400 hover:text-sky-300 transition" title="Toggle Fullscreen">
+            <i data-lucide="maximize-2" class="w-3.5 h-3.5"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- X-Frame-Options notice bar -->
+      <div id="security-notice" class="hidden px-4 py-2 bg-sky-950/90 border-b border-sky-800/60 text-sky-200 text-xs flex items-center justify-between gap-3">
+        <div class="flex items-center gap-2">
+          <i data-lucide="shield-alert" class="w-4 h-4 text-sky-400 shrink-0"></i>
+          <span>Target server is reachable! If iframe embedding is restricted by security policy (X-Frame-Options), tap Open in Tab.</span>
+        </div>
+        <button id="notice-launch-btn" class="bg-sky-600 hover:bg-sky-500 text-white font-mono font-medium px-2.5 py-1 rounded-md text-[11px] shrink-0 transition">
+          Open in Tab
+        </button>
+      </div>
+
+      <!-- Main Display Screen -->
+      <div class="relative flex-1 w-full h-full flex flex-col bg-encardio-dark">
+        
+        <!-- Live Viewer Iframe -->
+        <iframe 
+          id="web-frame" 
+          class="w-full flex-1 border-0 hidden bg-white transition-opacity duration-300"
+          sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-downloads"
+          loading="lazy"
+        ></iframe>
+
+        <!-- Loading / Probing State -->
+        <div id="loading-state" class="hidden absolute inset-0 bg-encardio-dark/85 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center z-10">
+          <div class="w-12 h-12 border-3 border-sky-500/20 border-t-sky-500 rounded-full animate-spin mb-4"></div>
+          <p class="text-sm font-semibold text-slate-200 font-mono">Probing endpoint & validating connection...</p>
+          <p class="text-xs text-slate-400 mt-1 max-w-sm font-mono truncate" id="checking-url-label">...</p>
+        </div>
+
+        <!-- Initial Placeholder State -->
+        <div id="empty-state" class="flex-1 flex flex-col items-center justify-center p-8 text-center">
+          <div class="w-16 h-16 rounded-2xl bg-encardio-card border border-encardio-border flex items-center justify-center mb-4 text-sky-400 shadow-inner">
+            <i data-lucide="cpu" class="w-8 h-8"></i>
+          </div>
+          <h2 class="text-base font-bold text-slate-200">Encardio Rite Viewer Ready</h2>
+          <p class="text-xs text-slate-400 max-w-md mt-1.5 leading-relaxed">
+            Input an internal monitoring URL, IP address with port, or telemetry web server. Omni-network probe will verify server accessibility and render the dashboard interface.
+          </p>
+          <div class="mt-4 p-3 bg-encardio-card border border-encardio-border rounded-xl text-left max-w-md w-full">
+            <div class="flex items-center gap-2 text-xs font-mono text-sky-400 font-semibold mb-1">
+              <i data-lucide="info" class="w-3.5 h-3.5"></i> Field Deployment Tips:
+            </div>
+            <ul class="text-[11px] text-slate-400 space-y-1 list-disc list-inside font-mono">
+              <li>Ensure your device is connected to the project Wi-Fi or VPN.</li>
+              <li>URLs are automatically cached on this device via browser storage.</li>
+              <li>Supports both HTTP & HTTPS internal addressing.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Exact Requested Unreachable Error Screen -->
+        <div id="error-state" class="hidden flex-1 flex flex-col items-center justify-center p-6 text-center bg-encardio-dark relative">
+          <div class="w-16 h-16 rounded-2xl bg-rose-950/60 border border-rose-800/80 flex items-center justify-center mb-4 text-rose-400 shadow-lg shadow-rose-900/20">
+            <i data-lucide="wifi-off" class="w-8 h-8"></i>
+          </div>
+          
+          <!-- Exact user-requested notification string -->
+          <h2 class="text-base sm:text-lg font-bold text-rose-400 max-w-lg tracking-tight leading-snug">
+            Server is not reachable at the moment, try connecting the right network
+          </h2>
+          
+          <p class="text-xs text-slate-400 mt-2 max-w-md font-mono bg-encardio-card px-3 py-1.5 rounded-lg border border-encardio-border text-slate-300 truncate" id="failed-url-text">
+            url
+          </p>
+
+          <!-- Field Diagnostic Checklist -->
+          <div class="mt-4 p-3 bg-rose-950/20 border border-rose-900/40 rounded-xl text-left max-w-md w-full text-[11px] text-slate-400 font-mono">
+            <span class="text-rose-300 font-semibold block mb-1">Diagnostics:</span>
+            • Check if Encardio sensor gateway or target port is running.<br>
+            • Ensure phone/tablet is on the same local subnet or company VPN.<br>
+            • Check firewall rules if accessing raw IP addresses.
+          </div>
+
+          <div class="flex items-center gap-3 mt-5">
+            <button id="retry-btn" class="px-4 py-2 bg-sky-600 hover:bg-sky-500 text-white text-xs font-semibold rounded-xl flex items-center gap-2 transition shadow-md shadow-sky-600/30">
+              <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+              <span>Retry Probe</span>
+            </button>
+            <button id="fallback-direct-link" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-semibold rounded-xl flex items-center gap-2 transition border border-slate-700">
+              <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+              <span>Try External Browser</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <footer class="w-full border-t border-encardio-border bg-encardio-card/60 backdrop-blur-sm py-3.5 px-6 text-center text-xs text-slate-400">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
+      <div class="flex items-center gap-2 text-slate-400 font-mono text-[11px]">
+        <i data-lucide="shield-check" class="w-3.5 h-3.5 text-sky-400"></i>
+        <span>Encardio Rite Client-Side Storage Active</span>
+      </div>
+      <!-- Exact requested attribution -->
+      <p class="font-medium tracking-wide text-slate-300 text-xs sm:text-sm">
+        Developed by <a href="https://UtkarshPandey.com" target="_blank" rel="noopener noreferrer" class="text-sky-400 hover:text-sky-300 font-semibold hover:underline">UtkarshPandey.com</a>
+      </p>
+    </div>
+  </footer>
+
+  <!-- Notification Toast message box -->
+  <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-800 border border-slate-700 text-slate-100 text-xs font-mono px-4 py-2 rounded-xl shadow-2xl transition-all duration-300 opacity-0 pointer-events-none z-50 flex items-center gap-2">
+    <i data-lucide="info" class="w-4 h-4 text-sky-400 shrink-0"></i>
+    <span id="toast-text">Toast message</span>
+  </div>
+
+  <script>
+    // Storage Keys
+    const STORAGE_KEY_LAST_URL = 'encardio_viewer_last_url';
+    const STORAGE_KEY_HISTORY = 'encardio_viewer_url_history';
+    const MAX_HISTORY_ITEMS = 6;
+
+    // DOM Elements
+    const urlForm = document.getElementById('url-form');
+    const urlInput = document.getElementById('url-input');
+    const clearInputBtn = document.getElementById('clear-input-btn');
+    const pasteBtn = document.getElementById('paste-btn');
+    const submitBtn = document.getElementById('submit-btn');
+    const btnText = document.getElementById('btn-text');
+    const openTabBtn = document.getElementById('open-tab-btn');
+    const recentUrlsList = document.getElementById('recent-urls-list');
+    const clearHistoryBtn = document.getElementById('clear-history-btn');
+    
+    // View States
+    const emptyState = document.getElementById('empty-state');
+    const loadingState = document.getElementById('loading-state');
+    const errorState = document.getElementById('error-state');
+    const checkingUrlLabel = document.getElementById('checking-url-label');
+    const failedUrlText = document.getElementById('failed-url-text');
+    const webFrame = document.getElementById('web-frame');
+    const activeUrlDisplay = document.getElementById('active-url-display');
+    const securityNotice = document.getElementById('security-notice');
+    const noticeLaunchBtn = document.getElementById('notice-launch-btn');
+    const retryBtn = document.getElementById('retry-btn');
+    const fallbackDirectLink = document.getElementById('fallback-direct-link');
+    const refreshFrameBtn = document.getElementById('refresh-frame-btn');
+    const fullscreenFrameBtn = document.getElementById('fullscreen-frame-btn');
+    const copyUrlBtn = document.getElementById('copy-url-btn');
+
+    // Network / PWA Elements
+    const deviceStatusText = document.getElementById('device-status-text');
+    const deviceBadge = document.getElementById('device-network-badge');
+    const pwaInstallBtn = document.getElementById('pwa-install-btn');
+    const toast = document.getElementById('toast');
+    const toastText = document.getElementById('toast-text');
+
+    let deferredPrompt = null;
+    let currentValidatedUrl = '';
+
+    function initializeIcons() {
+      if (window.lucide) {
+        window.lucide.createIcons();
+      }
+    }
+
+    function showToast(message) {
+      toastText.textContent = message;
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      toast.classList.add('opacity-100');
+      setTimeout(() => {
+        toast.classList.remove('opacity-100');
+        toast.classList.add('opacity-0', 'pointer-events-none');
+      }, 3000);
+    }
+
+    /* Normalizes IPs, ports, and protocols into standard URL */
+    function normalizeUrl(input) {
+      let trimmed = input.trim();
+      if (!trimmed) return '';
+      
+      // Auto-prefix http if missing
+      if (!/^https?:\/\//i.test(trimmed)) {
+        // If it looks like a local IP, use http by default
+        if (/^(\d{1,3}\.){3}\d{1,3}(:\d+)?/i.test(trimmed) || /^localhost(:\d+)?/i.test(trimmed)) {
+          trimmed = 'http://' + trimmed;
+        } else {
+          trimmed = 'https://' + trimmed;
+        }
+      }
+      try {
+        const parsed = new URL(trimmed);
+        return parsed.href;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    /* Network Probe with AbortController timeout */
+    async function checkUrlReachability(url, timeoutMs = 5000) {
+      if (!navigator.onLine) {
+        return false;
+      }
+
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+      try {
+        await fetch(url, {
+          method: 'HEAD',
+          mode: 'no-cors',
+          cache: 'no-cache',
+          signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+        return true;
+      } catch (err) {
+        // Probe using GET mode no-cors for embedded web servers that refuse HEAD
+        try {
+          const secondController = new AbortController();
+          const secondTimeout = setTimeout(() => secondController.abort(), 4000);
+          await fetch(url, {
+            method: 'GET',
+            mode: 'no-cors',
+            cache: 'no-cache',
+            signal: secondController.signal
+          });
+          clearTimeout(secondTimeout);
+          return true;
+        } catch (innerErr) {
+          clearTimeout(timeoutId);
+          return false;
+        }
+      }
+    }
+
+    function getStoredHistory() {
+      try {
+        const stored = localStorage.getItem(STORAGE_KEY_HISTORY);
+        return stored ? JSON.parse(stored) : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function saveUrlToHistory(url) {
+      try {
+        localStorage.setItem(STORAGE_KEY_LAST_URL, url);
+        let history = getStoredHistory().filter(item => item !== url);
+        history.unshift(url);
+        if (history.length > MAX_HISTORY_ITEMS) {
+          history = history.slice(0, MAX_HISTORY_ITEMS);
+        }
+        localStorage.setItem(STORAGE_KEY_HISTORY, JSON.stringify(history));
+        renderHistoryPills();
+      } catch (e) {
+        console.warn('LocalStorage error:', e);
+      }
+    }
+
+    function clearAllHistory() {
+      try {
+        localStorage.removeItem(STORAGE_KEY_LAST_URL);
+        localStorage.removeItem(STORAGE_KEY_HISTORY);
+        renderHistoryPills();
+        showToast('Local history cleared');
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    function renderHistoryPills() {
+      const history = getStoredHistory();
+      recentUrlsList.innerHTML = '';
+
+      if (history.length === 0) {
+        recentUrlsList.innerHTML = '<span class="text-slate-600 italic text-[11px]">No saved URLs</span>';
+        clearHistoryBtn.classList.add('hidden');
+        return;
+      }
+
+      clearHistoryBtn.classList.remove('hidden');
+
+      history.forEach(item => {
+        let label = item;
+        try {
+          const u = new URL(item);
+          label = u.host;
+        } catch (e) {}
+
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'px-2 py-0.5 bg-encardio-dark hover:bg-sky-600 hover:text-white text-slate-300 rounded font-mono text-[11px] border border-encardio-border transition shrink-0 max-w-[130px] truncate';
+        btn.title = item;
+        btn.textContent = label;
+        btn.addEventListener('click', () => {
+          urlInput.value = item;
+          processAndLoadUrl(item);
+        });
+        recentUrlsList.appendChild(btn);
+      });
+    }
+
+    function showLoading(url) {
+      checkingUrlLabel.textContent = url;
+      loadingState.classList.remove('hidden');
+      emptyState.classList.add('hidden');
+      errorState.classList.add('hidden');
+      securityNotice.classList.add('hidden');
+      submitBtn.disabled = true;
+      submitBtn.classList.add('opacity-70');
+      btnText.textContent = 'Connecting...';
+    }
+
+    function hideLoading() {
+      loadingState.classList.add('hidden');
+      submitBtn.disabled = false;
+      submitBtn.classList.remove('opacity-70');
+      btnText.textContent = 'Connect & Load';
+    }
+
+    function renderReachableSuccess(url) {
+      currentValidatedUrl = url;
+      errorState.classList.add('hidden');
+      emptyState.classList.add('hidden');
+      webFrame.classList.remove('hidden');
+      activeUrlDisplay.textContent = url;
+      activeUrlDisplay.className = "truncate font-mono text-[11px] sm:text-xs text-emerald-400 font-semibold";
+      
+      // Load iframe
+      webFrame.src = url;
+
+      // Handle security banner
+      securityNotice.classList.remove('hidden');
+      noticeLaunchBtn.onclick = () => window.open(url, '_blank', 'noopener,noreferrer');
+      saveUrlToHistory(url);
+    }
+
+    function renderReachableError(url) {
+      currentValidatedUrl = url;
+      webFrame.classList.add('hidden');
+      webFrame.src = 'about:blank';
+      emptyState.classList.add('hidden');
+      securityNotice.classList.add('hidden');
+      errorState.classList.remove('hidden');
+      
+      failedUrlText.textContent = url;
+      activeUrlDisplay.textContent = 'UNREACHABLE: ' + url;
+      activeUrlDisplay.className = "truncate font-mono text-[11px] sm:text-xs text-rose-400 font-semibold";
+      
+      fallbackDirectLink.onclick = () => window.open(url, '_blank', 'noopener,noreferrer');
+    }
+
+    async function processAndLoadUrl(rawInput) {
+      const normalized = normalizeUrl(rawInput);
+      if (!normalized) {
+        showToast('Please enter a valid URL or IP address');
+        return;
+      }
+
+      showLoading(normalized);
+      const isReachable = await checkUrlReachability(normalized);
+      hideLoading();
+
+      if (isReachable) {
+        renderReachableSuccess(normalized);
+      } else {
+        renderReachableError(normalized);
+      }
+    }
+
+    // Event Listeners
+    urlForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const val = urlInput.value.trim();
+      if (val) processAndLoadUrl(val);
+    });
+
+    urlInput.addEventListener('input', () => {
+      if (urlInput.value.length > 0) {
+        clearInputBtn.classList.remove('hidden');
+      } else {
+        clearInputBtn.classList.add('hidden');
+      }
+    });
+
+    clearInputBtn.addEventListener('click', () => {
+      urlInput.value = '';
+      clearInputBtn.classList.add('hidden');
+      urlInput.focus();
+    });
+
+    pasteBtn.addEventListener('click', async () => {
+      try {
+        if (navigator.clipboard && navigator.clipboard.readText) {
+          const text = await navigator.clipboard.readText();
+          if (text) {
+            urlInput.value = text.trim();
+            clearInputBtn.classList.remove('hidden');
+            showToast('Address pasted');
+          }
+        } else {
+          showToast('Clipboard access unavailable');
+        }
+      } catch (err) {
+        showToast('Clipboard permission blocked');
+      }
+    });
+
+    openTabBtn.addEventListener('click', () => {
+      const val = urlInput.value.trim();
+      const norm = normalizeUrl(val || currentValidatedUrl);
+      if (norm) {
+        window.open(norm, '_blank', 'noopener,noreferrer');
+      } else {
+        showToast('Provide an address first');
+      }
+    });
+
+    clearHistoryBtn.addEventListener('click', clearAllHistory);
+
+    retryBtn.addEventListener('click', () => {
+      if (currentValidatedUrl) processAndLoadUrl(currentValidatedUrl);
+    });
+
+    refreshFrameBtn.addEventListener('click', () => {
+      if (currentValidatedUrl && !webFrame.classList.contains('hidden')) {
+        webFrame.src = currentValidatedUrl;
+        showToast('Reloading frame...');
+      }
+    });
+
+    copyUrlBtn.addEventListener('click', () => {
+      const target = currentValidatedUrl || urlInput.value.trim();
+      if (!target) {
+        showToast('No active URL to copy');
+        return;
+      }
+      try {
+        const dummy = document.createElement('textarea');
+        dummy.value = target;
+        document.body.appendChild(dummy);
+        dummy.select();
+        document.execCommand('copy');
+        document.body.removeChild(dummy);
+        showToast('URL copied to clipboard');
+      } catch (e) {
+        showToast('Unable to copy');
+      }
+    });
+
+    fullscreenFrameBtn.addEventListener('click', () => {
+      const container = webFrame.parentElement;
+      if (!document.fullscreenElement) {
+        if (container.requestFullscreen) {
+          container.requestFullscreen();
+        }
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        }
+      }
+    });
+
+    // Preset Buttons
+    document.querySelectorAll('.preset-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const presetUrl = btn.getAttribute('data-url');
+        urlInput.value = presetUrl;
+        clearInputBtn.classList.remove('hidden');
+        processAndLoadUrl(presetUrl);
+      });
+    });
+
+    function updateDeviceStatus() {
+      if (navigator.onLine) {
+        deviceStatusText.textContent = 'NETWORK OK';
+        deviceBadge.className = 'flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-mono font-medium bg-emerald-950/80 text-emerald-400 border border-emerald-800/80 shadow-sm';
+        deviceBadge.firstElementChild.className = 'w-2 h-2 rounded-full bg-emerald-400 animate-pulse';
+      } else {
+        deviceStatusText.textContent = 'OFFLINE';
+        deviceBadge.className = 'flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-mono font-medium bg-rose-950/80 text-rose-400 border border-rose-800/80 shadow-sm';
+        deviceBadge.firstElementChild.className = 'w-2 h-2 rounded-full bg-rose-400';
+        showToast('Host device disconnected from network');
+      }
+    }
+
+    window.addEventListener('online', updateDeviceStatus);
+    window.addEventListener('offline', updateDeviceStatus);
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      pwaInstallBtn.classList.remove('hidden');
+    });
+
+    pwaInstallBtn.addEventListener('click', async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === 'accepted') {
+        showToast('Encardio Rite Viewer installed!');
+      }
+      deferredPrompt = null;
+      pwaInstallBtn.classList.add('hidden');
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      initializeIcons();
+      updateDeviceStatus();
+      renderHistoryPills();
+
+      // Retrieve last entered URL on this device
+      const lastSaved = localStorage.getItem(STORAGE_KEY_LAST_URL);
+      if (lastSaved) {
+        urlInput.value = lastSaved;
+        clearInputBtn.classList.remove('hidden');
+      }
+    });
+  </script>
+</body>
+</html>
